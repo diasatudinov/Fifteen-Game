@@ -20,6 +20,7 @@ struct MenuView: View {
     @StateObject var settingsVM = SettingsModel()
     //    @StateObject var shopVM = ShopViewModel()
     @StateObject var teamVM = TeamViewModel()
+    @StateObject private var trainingVM = TrainingViewModel()
     
     var body: some View {
         if teamVM.currentTeam == nil {
@@ -253,7 +254,7 @@ struct MenuView: View {
                 //                }
                 //            }
                 .fullScreenCover(isPresented: $showTraining) {
-                    //                TeamView(viewModel: teamVM)
+                    TrainingView(viewModel: trainingVM)
                 }
                 .fullScreenCover(isPresented: $showGame) {
                     //                GameView(teamVM: teamVM)
