@@ -1,42 +1,36 @@
+//
+//  SettingsView.swift
+//  Fifteen Game
+//
+//  Created by Dias Atudinov on 23.12.2024.
+//
+
+
 import SwiftUI
 import StoreKit
 
 struct SettingsView: View {
-    @StateObject var user = User.shared
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var settings: SettingsModel
+    @ObservedObject var teamVM: TeamViewModel
     
+    @State private var showChangeTeam = false
     var body: some View {
         ZStack {
+            
             VStack {
                 HStack {
                     Button {
                         presentationMode.wrappedValue.dismiss()
                     } label: {
                         ZStack {
-                            Image(.backBtn)
+                            Image(.backTL)
                                 .resizable()
                                 .scaledToFit()
-                        }.frame(height: DeviceInfo.shared.deviceType == .pad ? 100:55)
-                        
-                    }
-                    Spacer()
-                    
-                    HStack(spacing: 5){
-                        Spacer()
-                        
-                        ZStack {
-                            Image(.coinsBg)
-                                .resizable()
-                                .scaledToFit()
-                            
-                            Text("\(user.coins)")
-                                .font(.system(size: DeviceInfo.shared.deviceType == .pad ? 40:20, weight: .black))
-                                .foregroundStyle(.white)
-                                .textCase(.uppercase)
                         }.frame(height: DeviceInfo.shared.deviceType == .pad ? 100:50)
                         
                     }
+                    Spacer()
                     
                 
             }.padding([.top,.horizontal], 20)
@@ -45,95 +39,99 @@ struct SettingsView: View {
             }
             
             VStack(spacing: 0) {
-               
+                Spacer()
                 ZStack {
                     
-                    Image(.settingsBg)
+                    Image(.settingsBgTL)
                         .resizable()
                         .scaledToFit()
                     
                     VStack(spacing: 5) {
                         Text("music")
-                            .font(.system(size: DeviceInfo.shared.deviceType == .pad ? 40:20, weight: .bold))
+                            .font(.custom(Alike.regular.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 48:24))
                             .foregroundStyle(.white)
                             .textCase(.uppercase)
                         HStack {
-//                            Image(.musicIcon)
-//                                .resizable()
-//                                .scaledToFit()
-//                                .frame(height: DeviceInfo.shared.deviceType == .pad ? 120:65)
                             Button {
                                 settings.musicEnabled.toggle()
                             } label: {
                                 if settings.musicEnabled {
-                                    Image(.on)
+                                    Image(.onTL)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 65:50)
+                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 65:26)
                                 } else {
-                                    Image(.off)
+                                    Image(.offTL)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 65:50)
+                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 65:26)
                                 }
                             }
                             
-                        }
+                        }.padding(.bottom, 10)
                         
                         Text("Vibration")
-                            .font(.system(size: DeviceInfo.shared.deviceType == .pad ? 40:20, weight: .bold))
+                            .font(.custom(Alike.regular.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 48:24))
                             .foregroundStyle(.white)
                             .textCase(.uppercase)
                         HStack {
-//                            Image(.effectsIcon)
-//                                .resizable()
-//                                .scaledToFit()
-//                                .frame(height: DeviceInfo.shared.deviceType == .pad ? 120:65)
-                            
                             Button {
                                 settings.soundEnabled.toggle()
                             } label: {
                                 if settings.soundEnabled {
-                                    Image(.on)
+                                    Image(.onTL)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 65:50)
+                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 65:26)
                                 } else {
-                                    Image(.off)
+                                    Image(.offTL)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 65:50)
+                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 65:26)
                                 }
                             }
                         }.padding(.bottom, 10)
-                       
+                        
                         Button {
                             rateUs()
                         } label: {
                             ZStack {
-                                Image(.textBg)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: DeviceInfo.shared.deviceType == .pad ? 65:50)
                                 
                                 Text("Rate us")
-                                    .font(.system(size: DeviceInfo.shared.deviceType == .pad ? 40:20, weight: .bold))
+                                    .font(.custom(Alike.regular.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 48:24))
                                     .foregroundStyle(.white)
                                     .textCase(.uppercase)
                             }
+                        }.padding(.bottom, 10)
+                        
+                        Button {
+                            showChangeTeam = true
+                        } label: {
+                            TextBg(height: DeviceInfo.shared.deviceType == .pad ? 90:46, text: "Change Team", textSize: DeviceInfo.shared.deviceType == .pad ? 48:24)
+                            
+                            
                         }
                         
                     }
                     
-                }.scaledToFit().frame(height: DeviceInfo.shared.deviceType == .pad ? 500:312)
+                }.scaledToFit().frame(height: DeviceInfo.shared.deviceType == .pad ? 550:283)
+                Spacer()
             }
+            
+            
         }.background(
-            Image(.bg)
-                .resizable()
-                .edgesIgnoringSafeArea(.all)
-                .scaledToFill()
+            ZStack {
+                Color.main.ignoresSafeArea()
+                Image(.bgTL)
+                    .resizable()
+                    .edgesIgnoringSafeArea(.all)
+                    .scaledToFill()
+            }
             
         )
+        .fullScreenCover(isPresented: $showChangeTeam) {
+            TeamsView(viewModel: teamVM)
+        }
     }
     
     func rateUs() {
@@ -144,5 +142,5 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView(settings: SettingsModel())
+    SettingsView(settings: SettingsModel(), teamVM: TeamViewModel())
 }
