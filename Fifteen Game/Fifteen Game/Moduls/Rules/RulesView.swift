@@ -45,6 +45,7 @@ struct RulesView: View {
                     .padding(10)
                     .padding(.vertical, 7)
                     .multilineTextAlignment(.center)
+                    .frame(width: DeviceInfo.shared.deviceType == .pad ? 800:400)
                     .background(
                         Rectangle()
                             .foregroundStyle(.bgMain)
@@ -54,7 +55,7 @@ struct RulesView: View {
                             )
                     )
                     .cornerRadius(15)
-                    .padding(.horizontal, 180)
+                    
             }
             
         }.background(
