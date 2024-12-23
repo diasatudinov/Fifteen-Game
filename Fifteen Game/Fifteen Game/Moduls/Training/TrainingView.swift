@@ -1,29 +1,45 @@
+//
+//  TrainingView.swift
+//  Fifteen Game
+//
+//  Created by Dias Atudinov on 23.12.2024.
+//
+
+
 import SwiftUI
 
 struct TrainingView: View {
-    @StateObject private var viewModel = FifteenGameViewModel()
+    @StateObject private var viewModel = TrainingViewModel()
 
     let columns = Array(repeating: GridItem(.flexible()), count: 4)
 
     var body: some View {
         VStack {
-            Text("Online")
-                .font(.custom(Alike.regular.rawValue, size: 28))
-                .padding()
-                .textCase(.uppercase)
+            ZStack {
+                Image(.textBgTL)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 50)
+                Text("00:00")
+                    .font(.custom(Alike.regular.rawValue, size: 24))
+                    .foregroundStyle(.white)
+                    .textCase(.uppercase)
+            }
 
-            LazyVGrid(columns: columns, spacing: 10) {
+            LazyVGrid(columns: columns, spacing: 4) {
                 ForEach(viewModel.tiles) { tile in
                     ZStack {
-                        Rectangle()
-                            .foregroundColor(tile.value == nil ? Color.gray.opacity(0.3) : Color.blue)
-                            .frame(height: 80)
-                            .cornerRadius(8)
+                        if tile.value != nil {
+                            Image(.cell)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 66)
+                        }
 
                         if let value = tile.value {
                             Text("\(value)")
-                                .font(.title)
-                                .foregroundColor(.white)
+                                .font(.custom(Alike.regular.rawValue, size: 24))
+                                .foregroundColor(.black)
                         }
                     }
                     .onTapGesture {
@@ -32,17 +48,21 @@ struct TrainingView: View {
                         }
                     }
                 }
-            }
-            .padding()
-
-            Button("Restart") {
-                viewModel.resetGame()
-            }
-            .padding()
-            .background(Color.green)
-            .foregroundColor(.white)
-            .cornerRadius(8)
+            }.frame(width: 290)
+            .padding(15)
+            .background(
+                Rectangle()
+                    .cornerRadius(15)
+                    .foregroundStyle(.bgMain)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 15)
+                            .stroke(lineWidth: 2).foregroundStyle(.mainRed)
+                    )
+            )
         }
-        .padding()
     }
+}
+
+#Preview {
+    TrainingView()
 }

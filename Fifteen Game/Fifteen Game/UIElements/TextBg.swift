@@ -1,3 +1,11 @@
+//
+//  TextBg.swift
+//  Fifteen Game
+//
+//  Created by Dias Atudinov on 23.12.2024.
+//
+
+
 import SwiftUI
 
 struct TextBg: View {
@@ -6,18 +14,18 @@ struct TextBg: View {
     var textSize: CGFloat
     var body: some View {
         ZStack {
-            Image(.textBg)
+            Image(.textBgTL)
                 .resizable()
                 .scaledToFit()
                 .frame(height: height)
             Text(text)
-                .font(.system(size: textSize, weight: .bold))
-                .foregroundStyle(.white)
+                .font(.custom(Alike.regular.rawValue, size: textSize))
+                .foregroundStyle(.black)
                 .textCase(.uppercase)
         }
     }
 }
 
 #Preview {
-    TextBg(height: 100, text: "ррр...", textSize: 32)
+    TextBg(height: 100, text: "Select", textSize: 32)
 }
