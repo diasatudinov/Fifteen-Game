@@ -1,3 +1,11 @@
+//
+//  DeviceInfo.swift
+//  Fifteen Game
+//
+//  Created by Dias Atudinov on 23.12.2024.
+//
+
+
 import UIKit
 
 class DeviceInfo {

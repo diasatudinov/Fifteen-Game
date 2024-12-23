@@ -1,275 +1,277 @@
+//
+//  MenuView.swift
+//  Fifteen Game
+//
+//  Created by Dias Atudinov on 23.12.2024.
+//
+
+
 import SwiftUI
 
 struct MenuView: View {
     @Environment(\.presentationMode) var presentationMode
-    @State private var showTeam = false
+    @State private var showTraining = false
     @State private var showGame = false
-    @State private var showShop = false
+    @State private var showResults = false
     @State private var showRules = false
     @State private var showSettings = false
     
     
-    @StateObject var user = User.shared
-      @StateObject var settingsVM = SettingsModel()
-    @StateObject var shopVM = ShopViewModel()
+    @StateObject var settingsVM = SettingsModel()
+    //    @StateObject var shopVM = ShopViewModel()
     @StateObject var teamVM = TeamViewModel()
     
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0) {
-                Spacer()
-                
-                if geometry.size.width < geometry.size.height {
-                    // Вертикальная ориентация
-                    ZStack {
-                        
-                        VStack {
-                            HStack(spacing: 5){
-                                Spacer()
-                              
-                                ZStack {
-                                    Image(.coinsBg)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 80:43)
-                                    Text("\(user.coins)")
-                                        .font(.system(size: DeviceInfo.shared.deviceType == .pad ? 40 :16, weight: .black))
-                                        .foregroundStyle(.white)
-                                        .textCase(.uppercase)
-                                }.frame(height: DeviceInfo.shared.deviceType == .pad ? 100:55)
-                                
-                            }
-                            Spacer()
-                        }.padding()
-                        
-                        HStack {
-                            Spacer()
-                            VStack(spacing: 25) {
-                                Button {
-                                    showTeam = true
-                                } label: {
-                                    ZStack {
-                                        Image(.teamBg)
-                                            .resizable()
-                                            .scaledToFit()
-                                            
-                                        VStack(spacing: -5) {
-                                            Text("Team")
-                                                .font(.system(size: DeviceInfo.shared.deviceType == .pad ? 40:20, weight: .bold))
-                                                .foregroundStyle(.white)
-                                                .textCase(.uppercase)
-                                            HStack(spacing: DeviceInfo.shared.deviceType == .pad ? 100:50) {
-                                                Spacer()
-                                                if let currentTeam = teamVM.currentTeam {
-                                                    HStack {
-                                                        Image(currentTeam.icon)
-                                                            .resizable()
-                                                            .scaledToFit()
-                                                            .frame(height: DeviceInfo.shared.deviceType == .pad ? 50:25)
-                                                        
-                                                        Text(currentTeam.name)
-                                                            .font(.system(size: DeviceInfo.shared.deviceType == .pad ? 20:10, weight: .regular))
-                                                            .foregroundStyle(.white)
-                                                            .textCase(.uppercase)
-                                                    }
-                                                    HStack {
-                                                        Text("Score: \(currentTeam.score)")
-                                                            .font(.system(size: DeviceInfo.shared.deviceType == .pad ? 20:10, weight: .regular))
-                                                            .foregroundStyle(.white)
-                                                            .textCase(.uppercase)
-                                                        Image(.team1Logo)
-                                                            .resizable()
-                                                            .scaledToFit()
-                                                            .frame(height: DeviceInfo.shared.deviceType == .pad ? 50:25)
-                                                            .opacity(0)
-                                                    }
-                                                }
-                                                Spacer()
-                                            }
-                                        }
-                                    }.frame(height: DeviceInfo.shared.deviceType == .pad ? 140:70)
-                                }
-                                
-                                Button {
-                                    showGame = true
-                                } label: {
-                                    TextBg(height: DeviceInfo.shared.deviceType == .pad ? 150 : 75, text: "Let's fly", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
-                                }
-                                
-                                
-                                Button {
-                                    showShop = true
-                                } label: {
-                                    TextBg(height: DeviceInfo.shared.deviceType == .pad ? 150 : 75, text: "Shop", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
-                                }
-                                
-                                Button {
-                                    showRules = true
-                                } label: {
-                                    TextBg(height: DeviceInfo.shared.deviceType == .pad ? 150 : 75, text: "How to play?", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
-                                }
-                                
-                                Button {
-                                    showSettings = true
-                                } label: {
-                                    TextBg(height: DeviceInfo.shared.deviceType == .pad ? 150 : 75, text: "Settings", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
-                                }
-                                
-                            }
-                            Spacer()
-                        }
-                    }
-                } else {
-                    ZStack {
-                        
-                        VStack {
-                            HStack(spacing: 5){
-                                Spacer()
-                                ZStack {
-                                    Image(.coinsBg)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 80:43)
-                                    Text("\(user.coins)")
-                                        .font(.system(size: DeviceInfo.shared.deviceType == .pad ? 40 :16, weight: .black))
-                                        .foregroundStyle(.white)
-                                        .textCase(.uppercase)
-                                }.frame(height: DeviceInfo.shared.deviceType == .pad ? 100:55)
-                                
-                            }.padding([.top, .trailing], 20)
-                            Spacer()
-                        }
-                        
-                        VStack {
-                            Spacer()
+        if teamVM.currentTeam == nil {
+            TeamsView(viewModel: teamVM)
+        } else {
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    Spacer()
+                    
+                    if geometry.size.width < geometry.size.height {
+                        // Вертикальная ориентация
+                        ZStack {
                             
-                            VStack(spacing: 0) {
+                            
+                            
+                            HStack {
                                 Spacer()
-                                Button {
-                                    showTeam = true
-                                } label: {
-                                    ZStack {
-                                        Image(.teamBg)
-                                            .resizable()
-                                            .scaledToFit()
-                                            
-                                        VStack(spacing: 0) {
-                                            Text("Team")
-                                                .font(.system(size: DeviceInfo.shared.deviceType == .pad ? 48:24, weight: .bold))
-                                                .foregroundStyle(.white)
-                                                .textCase(.uppercase)
-                                            HStack(spacing: DeviceInfo.shared.deviceType == .pad ? 140:70) {
-                                                Spacer()
-                                                if let currentTeam = teamVM.currentTeam {
-                                                    HStack {
-                                                        Image(currentTeam.icon)
-                                                            .resizable()
-                                                            .scaledToFit()
-                                                            .frame(height: DeviceInfo.shared.deviceType == .pad ? 70:35)
-                                                        
-                                                        Text(currentTeam.name)
-                                                            .font(.system(size: DeviceInfo.shared.deviceType == .pad ? 28:14, weight: .regular))
-                                                            .foregroundStyle(.white)
-                                                            .textCase(.uppercase)
-                                                    }
-                                                    HStack {
-                                                        Text("Score: \(currentTeam.score)")
-                                                            .font(.system(size: DeviceInfo.shared.deviceType == .pad ? 28:14, weight: .regular))
-                                                            .foregroundStyle(.white)
-                                                            .textCase(.uppercase)
-                                                        Image(.team1Logo)
-                                                            .resizable()
-                                                            .scaledToFit()
-                                                            .frame(height: DeviceInfo.shared.deviceType == .pad ? 70:35)
-                                                            .opacity(0)
-                                                    }
-                                                }
-                                                Spacer()
-                                            }
-                                        }
-                                    }.frame(height: DeviceInfo.shared.deviceType == .pad ? 190:107)
-                                }
-                                HStack(spacing: 5) {
-                                    Spacer()
+                                VStack(spacing: 25) {
+                                    Image(.logoTL)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(height: 210)
+                                    Button {
+                                        showTraining = true
+                                    } label: {
+                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 90 : 46, text: "Training", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
+                                    }
+                                    
+                                    
                                     Button {
                                         
                                         showGame = true
                                     } label: {
-                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 150 : 75, text: "Let's fly", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
+                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 90 : 46, text: "Online", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
                                     }
-                                    
                                     
                                     Button {
-                                        
-                                        showShop = true
+                                        withAnimation {
+                                            showResults = true
+                                        }
                                     } label: {
-                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 150 : 75, text: "Shop", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
+                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 90 : 46, text: "Best Results", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
                                     }
-                                    Spacer()
-                                }
-                                
-                                HStack(spacing: 5) {
-                                    Spacer()
+                                    
                                     Button {
                                         showRules = true
                                     } label: {
-                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 150 : 75, text: "How to play?", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
+                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 90 : 46, text: "Rules", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
                                     }
                                     
                                     Button {
                                         showSettings = true
                                     } label: {
-                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 150 : 75, text: "Settings", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
+                                        TextBg(height: DeviceInfo.shared.deviceType == .pad ? 90 : 46, text: "Settings", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
                                     }
-                                    Spacer()
+                                    
                                 }
-                                
                                 Spacer()
-                            }.padding(.top)
-                           
+                            }
+                            
+                            if showResults {
+                                ZStack {
+                                    Image(.bestScoreBg)
+                                        .resizable()
+                                        .scaledToFit()
+                                    
+                                    
+                                    VStack(spacing: 5) {
+                                        Spacer()
+                                        Text("Time")
+                                            .font(.custom(Alike.regular.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 40:20))
+                                            .foregroundStyle(.white)
+                                            .textCase(.uppercase)
+                                        
+                                        Text("01:50")
+                                            .font(.custom(Alike.regular.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 40:20))
+                                            .foregroundStyle(.white)
+                                            .textCase(.uppercase)
+                                            .padding(.horizontal, 50)
+                                            .padding(.vertical, 5)
+                                            .background(
+                                                Rectangle()
+                                                    .foregroundStyle(.timeBg)
+                                                    .cornerRadius(20)
+                                                
+                                            )
+                                            .padding(.bottom, DeviceInfo.shared.deviceType == .pad ? 20:10)
+                                        
+                                        Button {
+                                            withAnimation {
+                                                showResults = false
+                                            }
+                                        } label: {
+                                            TextBg(height: DeviceInfo.shared.deviceType == .pad ? 80:38, text: "menu", textSize: DeviceInfo.shared.deviceType == .pad ? 48:24)
+                                        }
+                                        
+                                    }.padding(.bottom, DeviceInfo.shared.deviceType == .pad ? 50:18)
+                                }.frame(height: DeviceInfo.shared.deviceType == .pad ? 400:192)
+                            }
+                            
+                            
                         }
-                        
-                        
+                    } else {
+                        ZStack {
+                            
+                            VStack {
+                                Spacer()
+                                
+                                VStack(spacing: 15) {
+                                    Image(.logoTL)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(height: 182)
+                                    HStack(spacing: 15) {
+                                        Spacer()
+                                        Button {
+                                            showTraining = true
+                                        } label: {
+                                            TextBg(height: DeviceInfo.shared.deviceType == .pad ? 90 : 46, text: "Training", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
+                                        }
+                                        
+                                        
+                                        Button {
+                                            
+                                            showGame = true
+                                        } label: {
+                                            TextBg(height: DeviceInfo.shared.deviceType == .pad ? 90 : 46, text: "Online", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
+                                        }
+                                        Spacer()
+                                    }
+                                    
+                                    HStack(spacing: 15) {
+                                        Spacer()
+                                        Button {
+                                            withAnimation {
+                                                showResults = true
+                                            }
+                                        } label: {
+                                            TextBg(height: DeviceInfo.shared.deviceType == .pad ? 90 : 46, text: "Best Results", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
+                                        }
+                                        
+                                        Button {
+                                            showRules = true
+                                        } label: {
+                                            TextBg(height: DeviceInfo.shared.deviceType == .pad ? 90 : 46, text: "Rules", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
+                                        }
+                                        Spacer()
+                                    }
+                                    
+                                    HStack(spacing: 5) {
+                                        Spacer()
+                                        
+                                        
+                                        Button {
+                                            showSettings = true
+                                        } label: {
+                                            TextBg(height: DeviceInfo.shared.deviceType == .pad ? 90 : 46, text: "Settings", textSize: DeviceInfo.shared.deviceType == .pad ? 40 : 24)
+                                        }
+                                        Spacer()
+                                    }
+                                    
+                                    
+                                }
+                                Spacer()
+                            }
+                            
+                            if showResults {
+                                ZStack {
+                                    Image(.bestScoreBg)
+                                        .resizable()
+                                        .scaledToFit()
+                                    
+                                    
+                                    VStack(spacing: 5) {
+                                        Spacer()
+                                        Text("Time")
+                                            .font(.custom(Alike.regular.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 40:20))
+                                            .foregroundStyle(.white)
+                                            .textCase(.uppercase)
+                                        
+                                        Text("01:50")
+                                            .font(.custom(Alike.regular.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 40:20))
+                                            .foregroundStyle(.white)
+                                            .textCase(.uppercase)
+                                            .padding(.horizontal, 50)
+                                            .padding(.vertical, 5)
+                                            .background(
+                                                Rectangle()
+                                                    .foregroundStyle(.timeBg)
+                                                    .cornerRadius(20)
+                                                
+                                            )
+                                            .padding(.bottom, DeviceInfo.shared.deviceType == .pad ? 20:10)
+                                        
+                                        Button {
+                                            withAnimation {
+                                                showResults = false
+                                            }
+                                        } label: {
+                                            TextBg(height: DeviceInfo.shared.deviceType == .pad ? 80:38, text: "menu", textSize: DeviceInfo.shared.deviceType == .pad ? 48:24)
+                                        }
+                                        
+                                    }.padding(.bottom, DeviceInfo.shared.deviceType == .pad ? 50:18)
+                                }.frame(height: DeviceInfo.shared.deviceType == .pad ? 400:192)
+                            }
+                            
+                        }
                     }
+                    Spacer()
                 }
-            }
-            .background(
-                Image(.bg)
-                    .resizable()
-                    .edgesIgnoringSafeArea(.all)
-                    .scaledToFill()
+                .background(
+                    ZStack {
+                        Color.main.ignoresSafeArea()
+                        Image(.bgTL)
+                            .resizable()
+                            .edgesIgnoringSafeArea(.all)
+                            .scaledToFill()
+                    }
+                    
+                )
+                //            .onAppear {
+                //                if settingsVM.musicEnabled {
+                //                    MusicPlayer.shared.playBackgroundMusic()
+                //                }
+                //            }
+                //            .onChange(of: settingsVM.musicEnabled) { enabled in
+                //                if enabled {
+                //                    MusicPlayer.shared.playBackgroundMusic()
+                //                } else {
+                //                    MusicPlayer.shared.stopBackgroundMusic()
+                //                }
+                //            }
+                .fullScreenCover(isPresented: $showTraining) {
+                    //                TeamView(viewModel: teamVM)
+                }
+                .fullScreenCover(isPresented: $showGame) {
+                    //                GameView(teamVM: teamVM)
+                }
+//                .fullScreenCover(isPresented: $showResults) {
+//                    //                ShopView(viewModel: shopVM)
+//                }
+                .fullScreenCover(isPresented: $showRules) {
+                    RulesView()
+                }
+                .fullScreenCover(isPresented: $showSettings) {
+                    SettingsView(settings: settingsVM, teamVM: teamVM)
+                    
+                }
                 
-            )
-            .onAppear {
-                if settingsVM.musicEnabled {
-                    MusicPlayer.shared.playBackgroundMusic()
-                }
             }
-            .onChange(of: settingsVM.musicEnabled) { enabled in
-                if enabled {
-                    MusicPlayer.shared.playBackgroundMusic()
-                } else {
-                    MusicPlayer.shared.stopBackgroundMusic()
-                }
-            }
-            .fullScreenCover(isPresented: $showTeam) {
-                TeamView(viewModel: teamVM)
-            }
-            .fullScreenCover(isPresented: $showGame) {
-                GameView(teamVM: teamVM)
-            }
-            .fullScreenCover(isPresented: $showShop) {
-                ShopView(viewModel: shopVM)
-            }
-            .fullScreenCover(isPresented: $showRules) {
-                RulesView()
-            }
-            .fullScreenCover(isPresented: $showSettings) {
-                SettingsView(settings: settingsVM)
-                
-            }
-            
         }
+        
     }
 }
 
