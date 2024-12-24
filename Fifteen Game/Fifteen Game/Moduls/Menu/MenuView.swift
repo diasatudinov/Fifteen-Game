@@ -18,7 +18,6 @@ struct MenuView: View {
     
     
     @StateObject var settingsVM = SettingsModel()
-    //    @StateObject var shopVM = ShopViewModel()
     @StateObject var teamVM = TeamViewModel()
     @StateObject private var trainingVM = TrainingViewModel()
     
@@ -95,7 +94,7 @@ struct MenuView: View {
                                             .foregroundStyle(.white)
                                             .textCase(.uppercase)
                                         
-                                        Text("01:50")
+                                        Text(trainingVM.scoreTime)
                                             .font(.custom(Alike.regular.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 40:20))
                                             .foregroundStyle(.white)
                                             .textCase(.uppercase)
@@ -201,7 +200,7 @@ struct MenuView: View {
                                             .foregroundStyle(.white)
                                             .textCase(.uppercase)
                                         
-                                        Text("01:50")
+                                        Text(trainingVM.scoreTime)
                                             .font(.custom(Alike.regular.rawValue, size: DeviceInfo.shared.deviceType == .pad ? 40:20))
                                             .foregroundStyle(.white)
                                             .textCase(.uppercase)
@@ -241,27 +240,24 @@ struct MenuView: View {
                     }
                     
                 )
-                //            .onAppear {
-                //                if settingsVM.musicEnabled {
-                //                    MusicPlayer.shared.playBackgroundMusic()
-                //                }
-                //            }
-                //            .onChange(of: settingsVM.musicEnabled) { enabled in
-                //                if enabled {
-                //                    MusicPlayer.shared.playBackgroundMusic()
-                //                } else {
-                //                    MusicPlayer.shared.stopBackgroundMusic()
-                //                }
-                //            }
+                .onAppear {
+                    if settingsVM.musicEnabled {
+                        MusicPlayer.shared.playBackgroundMusic()
+                    }
+                }
+                .onChange(of: settingsVM.musicEnabled) { enabled in
+                    if enabled {
+                        MusicPlayer.shared.playBackgroundMusic()
+                    } else {
+                        MusicPlayer.shared.stopBackgroundMusic()
+                    }
+                }
                 .fullScreenCover(isPresented: $showTraining) {
-                    TrainingView(viewModel: trainingVM)
+                    TrainingView(viewModel: trainingVM, settingsVM: settingsVM)
                 }
                 .fullScreenCover(isPresented: $showGame) {
-                    //                GameView(teamVM: teamVM)
+                    OnlineView(teamVM: teamVM, settingsVM: settingsVM)
                 }
-//                .fullScreenCover(isPresented: $showResults) {
-//                    //                ShopView(viewModel: shopVM)
-//                }
                 .fullScreenCover(isPresented: $showRules) {
                     RulesView()
                 }

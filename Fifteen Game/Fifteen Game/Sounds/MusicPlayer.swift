@@ -13,7 +13,7 @@ class MusicPlayer {
     var audioPlayer: AVAudioPlayer?
 
     func playBackgroundMusic() {
-        guard let url = Bundle.main.url(forResource: "gameMusic", withExtension: "mp3") else { return }
+        guard let url = Bundle.main.url(forResource: "gameMusicTL", withExtension: "mp3") else { return }
 
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
