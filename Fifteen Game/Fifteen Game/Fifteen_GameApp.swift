@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct Fifteen_GameApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     var body: some Scene {
         WindowGroup {
-            MenuView()
+            RootView()
+                .preferredColorScheme(.light)
         }
     }
 }

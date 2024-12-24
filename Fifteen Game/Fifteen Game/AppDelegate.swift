@@ -1,3 +1,11 @@
+//
+//  AppDelegate.swift
+//  Fifteen Game
+//
+//  Created by Dias Atudinov on 24.12.2024.
+//
+
+
 import UIKit
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
