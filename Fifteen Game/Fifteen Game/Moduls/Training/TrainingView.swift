@@ -7,16 +7,18 @@
 
 
 import SwiftUI
+import AVFoundation
 
 struct TrainingView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: TrainingViewModel
-
+    @ObservedObject var settingsVM: SettingsModel
+    
     let columns = Array(repeating: GridItem(.flexible()), count: 4)
 
     @State private var isPause = false
     
-    
+    @State private var audioPlayer: AVAudioPlayer?
 
     var body: some View {
         ZStack {
@@ -80,6 +82,11 @@ struct TrainingView: View {
                         .onTapGesture {
                             if let index = viewModel.tiles.firstIndex(where: { $0.id == tile.id }) {
                                 viewModel.moveTile(at: index)
+                                
+                                if settingsVM.soundEnabled {
+                                    playSound(named: "move")
+                                    
+                                }
                             }
                         }
                     }
@@ -220,8 +227,19 @@ struct TrainingView: View {
             
         )
     }
+    
+    func playSound(named soundName: String) {
+        if let url = Bundle.main.url(forResource: soundName, withExtension: "mp3") {
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: url)
+                audioPlayer?.play()
+            } catch {
+                print("Error playing sound: \(error.localizedDescription)")
+            }
+        }
+    }
 }
 
 #Preview {
-    TrainingView(viewModel: TrainingViewModel())
+    TrainingView(viewModel: TrainingViewModel(), settingsVM: SettingsModel())
 }

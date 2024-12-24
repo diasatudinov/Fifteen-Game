@@ -46,4 +46,9 @@ class TeamViewModel: ObservableObject {
         }
     }
     
+    func randomTeam() -> Team? {
+        let otherTeams = teams.filter { $0.name != currentTeam?.name }
+        
+        return otherTeams.randomElement()
+    }
 }
