@@ -11,12 +11,15 @@ import Combine
 
 class GameViewModel: ObservableObject {
     @Published var tiles: [Tile] = []
-    @Published var isOver = false
+    @Published var opponentsTiles: [Tile] = []
     @Published var isWin = false
+    @Published var youLose = false
+    
     let gridSize = 4
     
     @Published var elapsedTime: String = "00:00"
     private var timer: AnyCancellable?
+    private var opponentTimer: Timer?
     private var startTime: Date?
     private var pausedTime: TimeInterval = 0
     private var isTimerRunning = false
@@ -41,6 +44,17 @@ class GameViewModel: ObservableObject {
         tiles = numbers.enumerated().map { index, value in
             Tile(id: index, value: value == 0 ? nil : value)
         }
+        
+        opponentsTiles = numbers.enumerated().map { index, value in
+            Tile(id: index, value: value == 0 ? nil : value)
+        }
+        startOpponent()
+        
+        // Start the timer on the first move
+        if !isTimerRunning {
+            timer?.cancel()
+            startTimer()
+        }
     }
     
     func moveTile(at index: Int) {
@@ -61,20 +75,13 @@ class GameViewModel: ObservableObject {
             // Swap the tapped tile with the empty cell
             tiles.swapAt(index, emptyIndex)
             
-            // Start the timer on the first move
-            if !isTimerRunning {
-                timer?.cancel()
-                startTimer()
-            }
-            
             // Check if the player has won
             if isGameCompleted() {
                 
                 stopTimer()
                 
                 if isNewRecord(currentTime: elapsedTime, recordTime: scoreTime) {
-                    isOver = true
-                    scoreTime = elapsedTime
+                
                 } else {
                     isWin = true
                 }
@@ -90,6 +97,16 @@ class GameViewModel: ObservableObject {
             }
         }
         return tiles.last?.value == nil
+    }
+    
+    func isOpponentsGameCompleted() -> Bool {
+        // The tiles should be in order from 1 to 15, with the empty cell at the end
+        for i in 0..<opponentsTiles.count - 1 {
+            if opponentsTiles[i].value != i + 1 {
+                return false
+            }
+        }
+        return opponentsTiles.last?.value == nil
     }
     
     func startTimer() {
@@ -142,4 +159,57 @@ class GameViewModel: ObservableObject {
 
         return currentSeconds < recordSeconds || recordTime == "00:00"
     }
+    
+    private func startOpponent() {
+        stopOpponent()
+        opponentTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            self.opponentMove()
+        }
+    }
+    
+    private func stopOpponent() {
+        opponentTimer?.invalidate()
+    }
+    
+    private func getAdjacentIndices(for index: Int) -> [Int] {
+            let row = index / gridSize
+            let col = index % gridSize
+            var indices: [Int] = []
+
+            if row > 0 { indices.append(index - gridSize) }        // Top
+            if row < gridSize - 1 { indices.append(index + gridSize) } // Bottom
+            if col > 0 { indices.append(index - 1) }              // Left
+            if col < gridSize - 1 { indices.append(index + 1) }   // Right
+
+            return indices
+        }
+    
+    private func handleGameOver(isOpponent: Bool = false) {
+            stopTimer()
+            stopOpponent()
+            if isOpponent {
+                youLose = true
+            } else if isNewRecord(currentTime: elapsedTime, recordTime: scoreTime) {
+        
+            } else {
+                isWin = true
+            }
+        }
+    
+    private func opponentMove() {
+        guard let emptyIndex = opponentsTiles.firstIndex(where: { $0.value == nil }) else { return }
+        
+        // Find all possible moves for the opponent
+        let adjacentIndices = getAdjacentIndices(for: emptyIndex)
+        if let randomMove = adjacentIndices.randomElement() {
+            opponentsTiles.swapAt(randomMove, emptyIndex)
+            
+            // Check if the opponent has won
+            if isGameCompleted() {
+                handleGameOver(isOpponent: true)
+            }
+        }
+    }
+    
+    
 }
