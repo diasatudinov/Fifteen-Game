@@ -10,6 +10,7 @@ import Combine
 class TrainingViewModel: ObservableObject {
     @Published var tiles: [Tile] = []
     @Published var isOver = false
+    @Published var isWin = false
     let gridSize = 4
     
     @Published var elapsedTime: String = "00:00"
@@ -66,9 +67,15 @@ class TrainingViewModel: ObservableObject {
             
             // Check if the player has won
             if isGameCompleted() {
-                isOver = true
-                scoreTime = elapsedTime
+                
                 stopTimer()
+                
+                if isNewRecord(currentTime: elapsedTime, recordTime: scoreTime) {
+                    isOver = true
+                    scoreTime = elapsedTime
+                } else {
+                    isWin = true
+                }
             }
         }
     }
@@ -117,5 +124,20 @@ class TrainingViewModel: ObservableObject {
         let minutes = elapsed / 60
         let seconds = elapsed % 60
         elapsedTime = String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    
+    private func isNewRecord(currentTime: String, recordTime: String) -> Bool {
+        let currentComponents = currentTime.split(separator: ":").compactMap { Int($0) }
+        let recordComponents = recordTime.split(separator: ":").compactMap { Int($0) }
+
+        guard currentComponents.count == 2, recordComponents.count == 2 else {
+            return false
+        }
+
+        let currentSeconds = currentComponents[0] * 60 + currentComponents[1]
+        let recordSeconds = recordComponents[0] * 60 + recordComponents[1]
+
+        return currentSeconds < recordSeconds || recordTime == "00:00"
     }
 }

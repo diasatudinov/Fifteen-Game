@@ -97,6 +97,37 @@ struct TrainingView: View {
                 Spacer()
             }
             
+            if viewModel.isWin {
+                ZStack {
+                    
+                    Color.black.opacity(0.5).ignoresSafeArea()
+                    
+                    Image(.youWinBg)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 400:195)
+                    VStack {
+                        Spacer()
+                        Button {
+                            viewModel.isWin = false
+                            viewModel.resetGame()
+                        } label: {
+                            TextBg(height: DeviceInfo.shared.deviceType == .pad ? 80:38, text: "New game", textSize: DeviceInfo.shared.deviceType == .pad ? 48:24)
+                            
+                        }
+                        
+                        Button {
+                            viewModel.resetGame()
+                            presentationMode.wrappedValue.dismiss()
+                        } label: {
+                            TextBg(height: DeviceInfo.shared.deviceType == .pad ? 80:38, text: "Menu", textSize: DeviceInfo.shared.deviceType == .pad ? 48:24)
+                            
+                        }
+                    }.padding(.bottom, DeviceInfo.shared.deviceType == .pad ? 60:30)
+                        .frame(height: DeviceInfo.shared.deviceType == .pad ? 400:195)
+                }
+            }
+            
             if isPause {
                 ZStack {
                     
